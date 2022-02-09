@@ -31,39 +31,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firebaseDatabase = getDatabase(app);
 
-// Write data to firebase database trayek
-function writeUserData(trayek, fares, ngetemLocation, routeTransport, ngetemLatitude, ngetemLongitude, descriptionTransport) {
-    const db = firebaseDatabase;
-    set(ref(db, 'Trayek/' + trayek), {
-        fares: fares,
-        ngetemLocation: ngetemLocation,
-        routeTransport: routeTransport,
-        ngetemLatitude: ngetemLatitude,
-        ngetemLongitude: ngetemLongitude,
-        descriptionTransport: descriptionTransport
-    }).then(() => { // add success
-        Swal.fire({
-            title: "Berhasil",
-            text: "Berhasil menambahkan data!",
-            icon: "success",
-            confirmButtonColor: "#4BB543"
-        }).then(function () {
-            // button ok clicked
-        })
-    }).catch(() => { // add failed
-        Swal.fire({
-            title: "Gagal",
-            text: "Gagal menambahkan data!",
-            icon: "error",
-            confirmButtonColor: "#FF3333"
-        })
-    });
-}
-
 // get id tBody
 const tBody = document.getElementById("tBody");
 // get id selected dropdown
-const inputSelectedTrayek = document.getElementById("inputSelectedTrayek");
+const getIdInputSelectedTrayek = document.getElementById("inputSelectedTrayek");
 // get id input tarif
 const getIdInputFares = document.getElementById("inputFares");
 // get id input ngetem
@@ -82,11 +53,56 @@ const btnAdd = document.getElementById("btnAdd");
 // add event click to button add
 btnAdd.addEventListener("click", () => {
     // get value form selected dropdown
-    const valueTrayek = inputSelectedTrayek.options[inputSelectedTrayek.selectedIndex].value;
+    const valueTrayek = getIdInputSelectedTrayek.options[getIdInputSelectedTrayek.selectedIndex].value;
 
     // call function write data database trayek
-    writeUserData(valueTrayek, getIdInputFares.value, getIdInputNgetem.value, getIdInputRoute.value, getIdInputLatitude.value, getIdInputLongitude.value, getIdInputDescription.value);
+    addDataTrayek(valueTrayek, getIdInputFares.value, getIdInputNgetem.value, getIdInputRoute.value, getIdInputLatitude.value, getIdInputLongitude.value, getIdInputDescription.value);
 })
+
+// Write data to firebase database trayek
+function addDataTrayek(trayek, fares, ngetemLocation, routeTransport, ngetemLatitude, ngetemLongitude, descriptionTransport) {
+    const db = firebaseDatabase;
+    set(ref(db, 'Trayek/' + trayek), {
+        fares: fares,
+        ngetemLocation: ngetemLocation,
+        routeTransport: routeTransport,
+        ngetemLatitude: ngetemLatitude,
+        ngetemLongitude: ngetemLongitude,
+        descriptionTransport: descriptionTransport
+    }).then(() => { // add success
+        Swal.fire({
+            title: "Berhasil",
+            text: "Berhasil menambahkan data!",
+            icon: "success",
+            confirmButtonColor: "#4BB543"
+        }).then(function () { // button ok clicked
+            // reset input
+            getIdInputSelectedTrayek.value = "trayek";
+            getIdInputFares.value = "";
+            getIdInputNgetem.value = "";
+            getIdInputRoute.value = "";
+            getIdInputLatitude.value = "";
+            getIdInputLongitude.value = "";
+            getIdInputDescription.value = "";
+        })
+    }).catch(() => { // add failed
+        Swal.fire({
+            title: "Gagal",
+            text: "Gagal menambahkan data!",
+            icon: "error",
+            confirmButtonColor: "#FF3333"
+        }).then(function () { // button ok clicked
+            // reset input
+            getIdInputSelectedTrayek.value = "trayek";
+            getIdInputFares.value = "";
+            getIdInputNgetem.value = "";
+            getIdInputRoute.value = "";
+            getIdInputLatitude.value = "";
+            getIdInputLongitude.value = "";
+            getIdInputDescription.value = "";
+        })
+    });
+}
 
 // Read data from firebase database trayek
 const trayekRef = ref(firebaseDatabase, "Trayek");
@@ -102,9 +118,9 @@ onValue(trayekRef, (snapshot) => {
             <td class="text-center">${trayek.val().routeTransport}</td>
             <td class="text-center">${trayek.val().ngetemLatitude}</td>
             <td class="text-center">${trayek.val().ngetemLongitude}</td>
-            <td class="text-center">${trayek.val().descriptionTransport}</td>
-            <td class="text-center" id="edit" data-bs-toggle="modal" data-bs-target="#updateModalTrayek"><i class="fas fa-edit bg-primary p-2 text-white rounded data-toggle="tooltip" title="Edit""></i></td>
-            <td class="text-center" id="delete"><i class="fas fa-trash-alt bg bg-danger p-2 text-white rounded data-toggle="tooltip" title="Delete""></i></td>
+            <td class="text-center col-1">${trayek.val().descriptionTransport}</td>
+            <td class="text-center" data-bs-toggle="modal" data-bs-target="#updateModalTrayek"><i class="edit fas fa-edit bg-primary p-2 text-white rounded data-toggle="tooltip" title="Edit""></i></td>
+            <td class="text-center"><i class="delete fas fa-trash-alt bg bg-danger p-2 text-white rounded data-toggle="tooltip" title="Delete""></i></td>
         </tr>
         `
         // add data to tBody
@@ -128,18 +144,23 @@ onValue(trayekRef, (snapshot) => {
     // get id button update
     const btnUpdate = document.getElementById("btnUpdate");
     // get all id button edit
-    const editButtons = document.querySelectorAll("#edit");
+    const editButtons = document.querySelectorAll(".edit");
     // get all id button delete
-    const deleteButtons = document.querySelectorAll("#delete");
+    const deleteButtons = document.querySelectorAll(".delete");
 
 
-    // add event click to all buttons edit
+    // add event click to all buttons edit by id
     editButtons.forEach((edit) => {
-        const trayekId = edit.parentElement.dataset.id;
-        const trayekDb = ref(firebaseDatabase);
-        edit.addEventListener(("click"), () => {
-            // get data trayek
-            get(child(trayekDb, `Trayek/${trayekId}`)).then((snapshot) => {
+        edit.addEventListener("click", () => {
+            let trayekId = edit.parentElement.parentElement.dataset.id;
+            getDataTrayek(trayekId);
+        })
+    })
+
+    function getDataTrayek(trayekId) {
+        // get data trayek
+        get(child(ref(firebaseDatabase), "Trayek/" + trayekId)).then((snapshot => {
+            if (snapshot.exists()) {
                 // add value from trayek id
                 getIdUpdateTrayek.value = trayekId;
                 // add value form fares
@@ -154,33 +175,51 @@ onValue(trayekRef, (snapshot) => {
                 getIdUpdateLongitude.value = snapshot.val().ngetemLongitude;
                 // add value form description transport
                 getIdUpdateDescription.value = snapshot.val().descriptionTransport;
-            })
+            }
+        }))
+    }
 
-            // add event click to button update
-            btnUpdate.addEventListener("click", (e) => {
-                // update data trayek
-                update(ref(firebaseDatabase, "Trayek/" + trayekId), {
-                    fares: getIdUpdateFares.value,
-                    ngetemLocation: getIdUpdateNgetem.value,
-                    routeTransport: getIdUpdateRoute.value,
-                    ngetemLatitude: getIdUpdateLatitude.value,
-                    ngetemLongitude: getIdUpdateLongitude.value,
-                    descriptionTransport: getIdUpdateDescription.value
-                }).then(() => { // update success
-                    Swal.fire({
-                        title: "Berhasil",
-                        text: "Berhasil mengedit data!",
-                        icon: "success",
-                        confirmButtonColor: "#4BB543"
-                    })
-                }).catch(() => { // update failed
-                    Swal.fire({
-                        title: "Gagal",
-                        text: "Gagal mengedit data!",
-                        icon: "error",
-                        confirmButtonColor: "#FF3333"
-                    })
-                })
+    // add event click to button update
+    btnUpdate.addEventListener("click", () => {
+        // update data trayek by id
+        update(ref(firebaseDatabase, "Trayek/" + getIdUpdateTrayek.value), {
+            fares: getIdUpdateFares.value,
+            ngetemLocation: getIdUpdateNgetem.value,
+            routeTransport: getIdUpdateRoute.value,
+            ngetemLatitude: getIdUpdateLatitude.value,
+            ngetemLongitude: getIdUpdateLongitude.value,
+            descriptionTransport: getIdUpdateDescription.value
+        }).then(() => { // update success
+            Swal.fire({
+                title: "Berhasil",
+                text: "Berhasil mengedit data!",
+                icon: "success",
+                confirmButtonColor: "#4BB543"
+            }).then(function () { // button ok clicked
+                // reset input
+                getIdUpdateTrayek.value = "";
+                getIdUpdateFares.value = "";
+                getIdUpdateNgetem.value = "";
+                getIdUpdateRoute.value = "";
+                getIdUpdateLatitude.value = "";
+                getIdUpdateLongitude.value = "";
+                getIdUpdateDescription.value = "";
+            })
+        }).catch(() => { // update failed
+            Swal.fire({
+                title: "Gagal",
+                text: "Gagal mengedit data!",
+                icon: "error",
+                confirmButtonColor: "#FF3333"
+            }).then(function () { // button ok clicked
+                // reset input
+                getIdUpdateTrayek.value = "";
+                getIdUpdateFares.value = "";
+                getIdUpdateNgetem.value = "";
+                getIdUpdateRoute.value = "";
+                getIdUpdateLatitude.value = "";
+                getIdUpdateLongitude.value = "";
+                getIdUpdateDescription.value = "";
             })
         })
     })
@@ -188,25 +227,38 @@ onValue(trayekRef, (snapshot) => {
     // add event click to all buttons delete
     deleteButtons.forEach((deleted) => {
         deleted.addEventListener("click", () => {
-            const trayekId = deleted.parentElement.dataset.id;
-
-            // delete data trayek
-            remove(ref(firebaseDatabase, "Trayek/" + trayekId))
-                .then(() => { // update success
-                    Swal.fire({
-                        title: "Berhasil",
-                        text: "Berhasil menghapus data!",
-                        icon: "success",
-                        confirmButtonColor: "#4BB543"
-                    })
-                }).catch(() => { // update failed
-                    Swal.fire({
-                        title: "Gagal",
-                        text: "Gagal menghapus data!",
-                        icon: "error",
-                        confirmButtonColor: "#FF3333"
-                    })
-                })
+            const trayekId = deleted.parentElement.parentElement.dataset.id;
+            // alert confirm
+            Swal.fire({
+                title: "Apakah anda yakin?",
+                text: "Anda tidak akan dapat mengembalikan ini!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#FF3333",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Hapus",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // delete data trayek
+                    remove(ref(firebaseDatabase, "Trayek/" + trayekId))
+                        .then(() => { // delete success
+                            Swal.fire({
+                                title: "Berhasil",
+                                text: "Berhasil menghapus data!",
+                                icon: "success",
+                                confirmButtonColor: "#4BB543"
+                            })
+                        }).catch(() => { // delete failed
+                            Swal.fire({
+                                title: "Gagal",
+                                text: "Gagal menghapus data!",
+                                icon: "error",
+                                confirmButtonColor: "#FF3333"
+                            })
+                        })
+                }
+            })
         })
     })
 })

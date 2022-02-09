@@ -58,10 +58,10 @@ onValue(driversRef, (snapshot) => {
         // check whether the driver account has been verified or not
         if (e) {
             verif[i].innerHTML = "Sudah terverifikasi";
-            verif[i].setAttribute("class", "bg-success text-white text-center p-1 rounded font-weight-bold");
+            verif[i].setAttribute("class", "bg-gradient-success text-white text-center p-1 rounded-3 font-weight-bold");
         } else {
             verif[i].innerHTML = "Belum terverifikasi";
-            verif[i].setAttribute("class", "bg-danger text-white text-center p-1 rounded font-weight-bold");
+            verif[i].setAttribute("class", "bg-gradient-danger text-white text-center p-1 rounded-3 font-weight-bold");
         }
     })
 
