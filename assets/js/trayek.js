@@ -118,7 +118,7 @@ onValue(trayekRef, (snapshot) => {
             <td class="text-center">${trayek.val().routeTransport}</td>
             <td class="text-center">${trayek.val().ngetemLatitude}</td>
             <td class="text-center">${trayek.val().ngetemLongitude}</td>
-            <td class="text-center col-1">${trayek.val().descriptionTransport}</td>
+            <td class="text-center" style="word-wrap: break-word;">${trayek.val().descriptionTransport}</td>
             <td class="text-center" data-bs-toggle="modal" data-bs-target="#updateModalTrayek"><i class="edit fas fa-edit bg-primary p-2 text-white rounded data-toggle="tooltip" title="Edit""></i></td>
             <td class="text-center"><i class="delete fas fa-trash-alt bg bg-danger p-2 text-white rounded data-toggle="tooltip" title="Delete""></i></td>
         </tr>
