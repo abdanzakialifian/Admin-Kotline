@@ -11,7 +11,6 @@ import {
     child,
     onValue,
 } from "https://www.gstatic.com/firebasejs/9.6.5/firebase-database.js";
-// TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
@@ -49,6 +48,8 @@ const getIdInputLongitude = document.getElementById("inputLongitude");
 const getIdInputDescription = document.getElementById("inputDescription");
 // get id button add
 const btnAdd = document.getElementById("btnAdd");
+// get id button cancel adding
+const btnCancelAdd = document.getElementById("btnCancelAdd");
 
 // add event click to button add
 btnAdd.addEventListener("click", () => {
@@ -57,7 +58,18 @@ btnAdd.addEventListener("click", () => {
 
     // call function write data database trayek
     addDataTrayek(valueTrayek, getIdInputFares.value, getIdInputNgetem.value, getIdInputRoute.value, getIdInputLatitude.value, getIdInputLongitude.value, getIdInputDescription.value);
-})
+});
+
+// add event click to button cancel add
+btnCancelAdd.addEventListener("click", () => {
+    getIdInputSelectedTrayek.value = "trayek";
+    getIdInputFares.value = "";
+    getIdInputNgetem.value = "";
+    getIdInputRoute.value = "";
+    getIdInputLatitude.value = "";
+    getIdInputLongitude.value = "";
+    getIdInputDescription.value = "";
+});
 
 // Write data to firebase database trayek
 function addDataTrayek(trayek, fares, ngetemLocation, routeTransport, ngetemLatitude, ngetemLongitude, descriptionTransport) {
@@ -118,7 +130,7 @@ onValue(trayekRef, (snapshot) => {
             <td class="text-center">${trayek.val().routeTransport}</td>
             <td class="text-center">${trayek.val().ngetemLatitude}</td>
             <td class="text-center">${trayek.val().ngetemLongitude}</td>
-            <td class="text-center" style="word-wrap: break-word;">${trayek.val().descriptionTransport}</td>
+            <td class="text-center">${trayek.val().descriptionTransport}</td>
             <td class="text-center" data-bs-toggle="modal" data-bs-target="#updateModalTrayek"><i class="edit fas fa-edit bg-primary p-2 text-white rounded data-toggle="tooltip" title="Edit""></i></td>
             <td class="text-center"><i class="delete fas fa-trash-alt bg bg-danger p-2 text-white rounded data-toggle="tooltip" title="Delete""></i></td>
         </tr>

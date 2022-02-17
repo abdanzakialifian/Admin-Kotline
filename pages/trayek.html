@@ -121,8 +121,8 @@
               <form class="row g-3">
                 <div class="col-md-6">
                   <label for="chooseTrayek">Trayek</label>
-                  <select class="form-select" id="inputSelectedTrayek">
-                    <option value="trayek">Pilih Trayek</option>
+                  <select class="form-select" id="inputSelectedTrayek" onchange="inputEmpty()">
+                    <option value="trayek" selected>Pilih Trayek</option>
                     <option value="A">Trayek A</option>
                     <option value="B">Trayek B</option>
                     <option value="C">Trayek C</option>
@@ -131,35 +131,35 @@
                 </div>
                 <div class="col-md-6">
                   <label for="inputFares" class="form-label">Tarif</label>
-                  <input type="text" class="form-control" id="inputFares">
+                  <input type="text" class="form-control" id="inputFares" onkeyup="inputEmpty()">
                 </div>
               </form>
               <form class="row g-3">
                 <div class="col-md-6">
                   <label for="inputNgetem" class="form-label">Lokasi Ngetem</label>
-                  <input type="text" class="form-control" id="inputNgetem">
+                  <input type="text" class="form-control" id="inputNgetem" onkeyup="inputEmpty()">
                 </div>
                 <div class="col-md-6">
                   <label for="inputRoute" class="form-label">Rute Angkutan</label>
-                  <input type="text" class="form-control" id="inputRoute">
+                  <input type="text" class="form-control" id="inputRoute" onkeyup="inputEmpty()">
                 </div>
               </form>
               <form class="row g-3">
                 <div class="col-md-6">
                   <label for="inputLatitude" class="form-label">Ngetem Latitude</label>
-                  <input type="text" class="form-control" id="inputLatitude">
+                  <input type="text" class="form-control" id="inputLatitude" onkeyup="inputEmpty()">
                 </div>
                 <div class="col-md-6">
                   <label for="inputLongitude" class="form-label">Ngetem Longitude</label>
-                  <input type="text" class="form-control" id="inputLongitude">
+                  <input type="text" class="form-control" id="inputLongitude" onkeyup="inputEmpty()">
                 </div>
               </form>
               <label for="inputDescription" class="form-label">Deskripsi Angkutan</label>
-              <textarea class="form-control" id="inputDescription" rows="3"></textarea>
+              <textarea class="form-control" id="inputDescription" rows="3" onkeyup="inputEmpty()"></textarea>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal">Add</button>
+              <button type="button" class="btn btn-secondary" id="btnCancelAdd" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" id="btnAdd" data-bs-dismiss="modal" disabled>Add</button>
             </div>
           </div>
         </div>
@@ -181,31 +181,31 @@
                 </div>
                 <div class="col-md-6">
                   <label for="updateFares" class="form-label">Tarif</label>
-                  <input type="text" class="form-control" id="updateFares">
+                  <input type="text" class="form-control" id="updateFares" onkeyup="updateEmpty()">
                 </div>
               </form>
               <form class="row g-3">
                 <div class="col-md-6">
                   <label for="updateNgetem" class="form-label">Lokasi Ngetem</label>
-                  <input type="text" class="form-control" id="updateNgetem">
+                  <input type="text" class="form-control" id="updateNgetem" onkeyup="updateEmpty()">
                 </div>
                 <div class="col-md-6">
                   <label for="updateRoute" class="form-label">Rute Angkutan</label>
-                  <input type="text" class="form-control" id="updateRoute">
+                  <input type="text" class="form-control" id="updateRoute" onkeyup="updateEmpty()">
                 </div>
               </form>
               <form class="row g-3">
                 <div class="col-md-6">
                   <label for="updateLatitude" class="form-label">Ngetem Latitude</label>
-                  <input type="text" class="form-control" id="updateLatitude">
+                  <input type="text" class="form-control" id="updateLatitude" onkeyup="updateEmpty()">
                 </div>
                 <div class="col-md-6">
                   <label for="updateLongitude" class="form-label">Ngetem Longitude</label>
-                  <input type="text" class="form-control" id="updateLongitude">
+                  <input type="text" class="form-control" id="updateLongitude" onkeyup="updateEmpty()">
                 </div>
               </form>
               <label for="updateDescription" class="form-label">Deskripsi Angkutan</label>
-              <textarea class="form-control" id="updateDescription" rows="3"></textarea>
+              <textarea class="form-control" id="updateDescription" rows="3" onkeyup="updateEmpty()"></textarea>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -223,7 +223,7 @@
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0 table-bordered">
+                <table class="table mb-0">
                   <thead>
                     <tr>
                       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
@@ -241,8 +241,7 @@
                       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
                         Ngetem Longitude
                       </th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
-                        style="word-wrap: break-word;">
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
                         Deskripsi Angkutan
                       </th>
                       <th class=" text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
@@ -258,10 +257,30 @@
         </div>
       </div>
       <!-- Footer -->
-      <footer class="sticky-footer p-3 fixed-bottom">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Admin Kotline</span>
+      <footer class="footer pt-3  ">
+        <div class="container-fluid">
+          <div class="row align-items-center justify-content-lg-between">
+            <div class="col-lg-6 mb-lg-0 mb-4">
+              <div class="copyright text-center text-sm text-muted text-lg-start">
+                © <script>
+                  document.write(new Date().getFullYear())
+                </script>,
+                made with by <b>Admin Kotline</b>.
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                <li class="nav-item">
+                  <a href="#" class="nav-link text-muted" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link text-muted" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link text-muted" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </footer>
@@ -291,6 +310,62 @@
   <script type="module" src="../assets/js/trayek.js"></script>
   <!-- Switch alert js -->
   <script src="../assets/sweetalert2/dist/sweetalert2.min.js"></script>
+
+  <script>
+    // function to enabled and disabled button if input is empty
+    function inputEmpty() {
+      // get id selected dropdown
+      const getIdInputSelectedTrayek = document.getElementById("inputSelectedTrayek");
+      // get id input tarif
+      const getIdInputFares = document.getElementById("inputFares");
+      // get id input ngetem
+      const getIdInputNgetem = document.getElementById("inputNgetem");
+      // get id input route
+      const getIdInputRoute = document.getElementById("inputRoute");
+      // get id input latitude
+      const getIdInputLatitude = document.getElementById("inputLatitude");
+      // get id input longitude
+      const getIdInputLongitude = document.getElementById("inputLongitude");
+      // get id input description
+      const getIdInputDescription = document.getElementById("inputDescription");
+      // get id button add
+      const btnAdd = document.getElementById("btnAdd");
+
+      if (getIdInputSelectedTrayek.options[getIdInputSelectedTrayek.selectedIndex].value !== "trayek" && getIdInputFares
+        .value !== "" && getIdInputNgetem.value !== "" && getIdInputRoute.value !== "" && getIdInputLatitude.value !==
+        "" && getIdInputLongitude.value !== "" && getIdInputDescription.value !== ""
+      ) {
+        btnAdd.disabled = false;
+      } else {
+        btnAdd.disabled = true;
+      }
+    }
+
+    // function to enabled and disabled button if update is empty
+    function updateEmpty() {
+      // get id update tarif
+      const getIdUpdateFares = document.getElementById("updateFares");
+      // get id update ngetem
+      const getIdUpdateNgetem = document.getElementById("updateNgetem");
+      // get id update route
+      const getIdUpdateRoute = document.getElementById("updateRoute");
+      // get id update latitude
+      const getIdUpdateLatitude = document.getElementById("updateLatitude");
+      // get id update longitude
+      const getIdUpdateLongitude = document.getElementById("updateLongitude");
+      // get id update description
+      const getIdUpdateDescription = document.getElementById("updateDescription");
+      // get id button update
+      const btnUpdate = document.getElementById("btnUpdate");
+
+      if (getIdUpdateFares.value !== "" && getIdUpdateNgetem.value !== "" && getIdUpdateRoute.value !== "" &&
+        getIdUpdateLatitude.value !== "" && getIdUpdateLongitude.value !== "" && getIdUpdateDescription.value !== "") {
+        btnUpdate.disabled = false;
+      } else {
+        btnUpdate.disabled = true;
+      }
+    }
+  </script>
 </body>
 
 </html>
