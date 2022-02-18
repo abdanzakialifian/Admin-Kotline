@@ -82,7 +82,8 @@ function validation() {
     return true;
 }
 
-function registerUser() {
+// function to register admin
+function registerAdmin() {
     if (!validation()) {
         return;
     }
@@ -112,7 +113,7 @@ function registerUser() {
                     icon: "success",
                     confirmButtonColor: "#4BB543"
                 }).then(function () { // button ok in modal clicked
-                    window.location.href = "http://127.0.0.1:5500/index.html";
+                    window.location.replace("../index.html");
                     name.value = "";
                     username.value = "";
                     email.value = "";
@@ -138,4 +139,4 @@ function encrypPassword() {
 }
 
 // add event click for button sign up
-btnSignUp.addEventListener("click", registerUser);
+btnSignUp.addEventListener("click", registerAdmin);

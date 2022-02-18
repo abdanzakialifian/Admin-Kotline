@@ -17,6 +17,8 @@
   <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="../assets/css/argon-dashboard.css?v=2.0.0" rel="stylesheet" />
+  <!-- Switch alert css -->
+  <link rel="stylesheet" href="../assets/sweetalert2/dist/sweetalert2.css">
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
@@ -54,7 +56,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="trayek.html">
+          <a class="nav-link" href="trayek.html">
             <div
               class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="fas fa-road text-info text-sm opacity-10"></i>
@@ -79,25 +81,25 @@
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <ul class="navbar-nav justify-content-end ms-md-auto d-flex align-items-center">
-            <li class="nav-item">
-              <a href="javascript:;" class="nav-link text-white font-weight-bold px-0">
-                <div class="d-flex align-items-center">
-                  <span class="avatar avatar-sm rounded-circle">
-                    <img alt="Image placeholder" src="../assets/img/logo-dishub.png">
-                  </span>
-                  <span class="d-sm-inline d-none ms-2">Dinas Perhubungan Banjarnegara</span>
-                </div>
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <span class="me-2 d-none d-lg-inline text-gray-800 medium text-bold text-white" id="adminName">Douglas
+                  McGee</span>
+                <img class="img-profile rounded-circle" src="../assets/img/default-profile.jpg" width="35px">
               </a>
-            </li>
-
-            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
-                <div class="sidenav-toggler-inner">
-                  <i class="sidenav-toggler-line bg-white"></i>
-                  <i class="sidenav-toggler-line bg-white"></i>
-                  <i class="sidenav-toggler-line bg-white"></i>
-                </div>
-              </a>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Profile
+                </a>
+                <a class="dropdown-item" href="#" id="signOut" role="button">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
+              </div>
             </li>
           </ul>
         </div>
@@ -237,6 +239,7 @@
   <!--   Core JS Files   -->
   <script src="../assets/js/core/popper.min.js"></script>
   <script src="../assets/js/core/bootstrap.min.js"></script>
+  <script src="../assets/js/jquery/jquery.min.js"></script>
   <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
   <script src="../assets/js/plugins/chartjs.min.js"></script>
@@ -253,8 +256,10 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/argon-dashboard.min.js?v=2.0.0"></script>
+  <!-- Switch alert js -->
+  <script src="../assets/sweetalert2/dist/sweetalert2.min.js"></script>
   <!-- Index js -->
-  <script type="module" src="../assets/js/index.js"></script>
+  <script type="module" src="../assets/js/dashboard.js"></script>
 </body>
 
 </html>

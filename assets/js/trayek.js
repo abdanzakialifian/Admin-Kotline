@@ -46,10 +46,53 @@ const getIdInputLatitude = document.getElementById("inputLatitude");
 const getIdInputLongitude = document.getElementById("inputLongitude");
 // get id input description
 const getIdInputDescription = document.getElementById("inputDescription");
+// get id admin name
+let adminName = document.getElementById("adminName");
 // get id button add
 const btnAdd = document.getElementById("btnAdd");
 // get id button cancel adding
 const btnCancelAdd = document.getElementById("btnCancelAdd");
+// get id button sign out
+let btnSignOut = document.getElementById("signOut");
+
+var currentUser = null;
+
+// function to get username
+function getUsername() {
+    let keepLoggedIn = localStorage.getItem("keepLoggedIn");
+
+    if (keepLoggedIn == "yes") {
+        currentUser = JSON.parse(localStorage.getItem("admin"));
+    } else {
+        currentUser = JSON.parse(sessionStorage.getItem("admin"));
+    }
+}
+
+// funtion for logout
+function signOutAdmin() {
+    sessionStorage.removeItem("admin");
+    localStorage.removeItem("admin");
+    localStorage.removeItem("keepLoggedIn");
+    window.location = "../index.html";
+}
+
+// adding event click for button sign out
+btnSignOut.addEventListener("click", () => {
+    Swal.fire({
+        title: "Keluar?",
+        text: "Apakah kamu yakin ingin keluar dari akun ini?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#FF3333",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Keluar",
+        cancelButtonText: "Batal"
+    }).then((result) => { // button keluar clicked
+        if (result.isConfirmed) {
+            signOutAdmin();
+        }
+    })
+})
 
 // add event click to button add
 btnAdd.addEventListener("click", () => {
@@ -274,3 +317,13 @@ onValue(trayekRef, (snapshot) => {
         })
     })
 })
+
+// load data
+window.onload = function () {
+    getUsername();
+    if (currentUser == null) {
+        window.location.href = "../index.html";
+    } else {
+        adminName.innerHTML = currentUser.name;
+    }
+}
