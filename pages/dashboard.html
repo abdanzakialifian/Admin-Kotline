@@ -85,13 +85,14 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                <span class="me-2 d-none d-lg-inline text-gray-800 medium text-bold text-white" id="adminName">Douglas
-                  McGee</span>
-                <img class="img-profile rounded-circle" src="../assets/img/default-profile.jpg" width="35px">
+                <span class="me-2 d-none d-lg-inline text-gray-800 medium text-bold text-white" id="adminName"></span>
+                <img class="img-profile rounded-circle" src="../assets/img/default-profile.jpg" id="imageProfiles"
+                  width="40" height="40" style="object-fit: cover;">
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="#" id="editProfile" data-bs-toggle="modal"
+                  data-bs-target="#updateModalProfile">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
@@ -101,10 +102,52 @@
                 </a>
               </div>
             </li>
+            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line bg-white"></i>
+                  <i class="sidenav-toggler-line bg-white"></i>
+                  <i class="sidenav-toggler-line bg-white"></i>
+                </div>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
     </nav>
+
+    <!-- Modal Edit Profile -->
+    <div class="modal fade" id="updateModalProfile" tabindex="-1" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+          </div>
+          <div class="modal-body">
+            <div class="text-center rounded-circle">
+              <a href="#" id="editImage">
+                <img class="img-profile rounded-circle" src="../assets/img/default-profile.jpg" width="120" height="120"
+                  id="imageProfile" style="object-fit: cover;">
+              </a>
+            </div>
+            <form class="row g-3 mt-4 text-center" style="float: none; margin: 0 auto;">
+              <div class="col-md-8 text-center" style="float: none; margin: 0 auto;">
+                <input type="text" class="form-control text-center" id="editName" style="float: none; margin: 0 auto;">
+              </div>
+            </form>
+            <div class="text-center mt-3">
+              <label id="progress"></label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="btnCancelAdd" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="btnUpdate">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- End Navbar -->
     <div class="container-fluid py-4">
       <div class="row">

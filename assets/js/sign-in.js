@@ -4,7 +4,6 @@ import {
 import {
     getDatabase,
     ref,
-    set,
     get,
     child,
 } from "https://www.gstatic.com/firebasejs/9.6.5/firebase-database.js";

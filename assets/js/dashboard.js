@@ -6,7 +6,14 @@ import {
     getDatabase,
     ref,
     onValue,
+    update
 } from "https://www.gstatic.com/firebasejs/9.6.5/firebase-database.js";
+import {
+    getStorage,
+    ref as sRef,
+    uploadBytesResumable,
+    getDownloadURL
+} from "https://www.gstatic.com/firebasejs/9.6.5/firebase-storage.js";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
@@ -30,8 +37,128 @@ const firebaseDatabase = getDatabase(app);
 let adminName = document.getElementById("adminName");
 // get id button sign out
 let btnSignOut = document.getElementById("signOut");
+// get id edit profile
+let editProfile = document.getElementById("editProfile");
+// get id edit image
+let editImage = document.getElementById("editImage");
+// get id image profile
+var imageProfile = document.getElementById("imageProfile");
+// get id edit name
+let editName = document.getElementById("editName");
+// get id progress
+let progressText = document.getElementById("progress");
+// get id update
+let btnUpdate = document.getElementById("btnUpdate");
+// get id modal update
+let imageProfiles = document.getElementById("imageProfiles");
+// create element
+var input = document.createElement("input");
 
 var currentUser = null;
+var extName = "";
+var fileName = "";
+var files = [];
+var reader = new FileReader();
+
+input.type = "file";
+input.onchange = e => {
+    files = e.target.files;
+
+    extName = GetFileExt(files[0]);
+    fileName = GetFileName(files[0]);
+
+    reader.readAsDataURL(files[0]);
+}
+
+reader.onload = function () {
+    imageProfile.src = reader.result;
+}
+
+editImage.addEventListener("click", () => {
+    input.click();
+})
+
+function GetFileExt(file) {
+    var temp = file.name.split('.');
+    var ext = temp.slice((temp.length - 1), (temp.length));
+    return '.' + ext[0];
+}
+
+function GetFileName(file) {
+    var temp = file.name.split('.');
+    var fName = temp.slice(0, -1).join('.');
+    return fName;
+}
+
+async function uploadProcess() {
+    var imgUpload = files[0];
+
+    var imageName = fileName + extName;
+
+    const metaData = {
+        contentType: imgUpload.type
+    }
+
+    const storage = getStorage();
+    const storageRef = sRef(storage, "Images/" + imageName);
+
+    const uploadTask = uploadBytesResumable(storageRef, imgUpload, metaData);
+
+    uploadTask.on('state-changed', (snapshot) => {
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        progressText.innerHTML = "Upload " + parseInt(progress) + "%";
+        if (parseInt(progress) == 100) {
+            progressText.innerHTML = "";
+        }
+    }, () => {}, () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            updateDataUser(downloadURL);
+        });
+    });
+}
+
+// function to update data user
+function updateDataUser(url) {
+    update(ref(firebaseDatabase, "Users/Admin/" + currentUser.username), {
+        name: editName.value,
+        imageProfile: url
+    }).then(() => {
+        Swal.fire({
+            title: "Berhasil",
+            text: "Berhasil mengupdate data!",
+            icon: "success",
+            confirmButtonColor: "#4BB543"
+        })
+    }).catch(() => {
+        Swal.fire({
+            title: "Gagal",
+            text: "Gagal mengupdate data!",
+            icon: "error",
+            confirmButtonColor: "#FF3333"
+        })
+    })
+
+    getDataUser();
+}
+
+// add event to button update
+btnUpdate.onclick = uploadProcess;
+
+// get data user 
+function getDataUser() {
+    var userRef = ref(firebaseDatabase, "Users/Admin/" + currentUser.username);
+    onValue(userRef, (snapshot) => {
+        editName.value = snapshot.val().name;
+        adminName.innerHTML = snapshot.val().name;
+        if (snapshot.val().imageProfile == null) {
+            imageProfile.src = "../assets/img/default-profile.jpg"
+            imageProfiles.src = "../assets/img/default-profile.jpg"
+        } else {
+            imageProfiles.src = snapshot.val().imageProfile;
+            imageProfile.src = snapshot.val().imageProfile;
+        }
+    })
+}
 
 // function to get username
 function getUsername() {
@@ -158,6 +285,14 @@ window.onload = function () {
     if (currentUser == null) {
         window.location.href = "../index.html";
     } else {
-        adminName.innerHTML = currentUser.name;
+        getDataUser();
     }
 }
+
+editProfile.addEventListener("click", () => {
+    if (currentUser == null) {
+        window.location.href = "../index.html";
+    } else {
+        getDataUser();
+    }
+})
