@@ -31,9 +31,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firebaseDatabase = getDatabase(app);
 
-var map = L.map('map').setView([-7.447390, 109.553857], 10);
-var customerMarker;
-var driverMarker;
+var map = L.map('map').setView([-7.447390, 109.553857], 12);
+
 // get id admin name
 let adminName = document.getElementById("adminName");
 // get id button sign out
@@ -200,7 +199,7 @@ btnSignOut.addEventListener("click", () => {
 
 L.tileLayer(
     'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-        maxZoom: 30,
+        maxZoom: 20,
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
             'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         id: 'mapbox/streets-v11',
@@ -213,60 +212,69 @@ if (!navigator.geolocation) {
     console.log("Your browser doesn't support geolocation feature!");
 } else {
     setInterval(() => {
+        map.eachLayer((layer) => {
+            if (layer['_latlng'] != undefined) {
+                layer.remove()
+            }
+        })
         getPositonCustomers()
         getPositionDrivers()
-    }, 1000)
+    }, 5000)
 }
 
 function getPositonCustomers() {
-
-    if (customerMarker != undefined) {
-        map.removeLayer(customerMarker);
-    }
-
     get(child(ref(firebaseDatabase), "CustomersPosition")).then((snapshot => {
         if (snapshot.exists()) {
+
+            let customerIcon = L.icon({
+                iconUrl: '../assets/img/icon-person.png',
+                iconSize: [35, 35]
+            })
+
             snapshot.forEach((e) => {
 
                 let lat = e.val().l[0];
                 let long = e.val().l[1];
 
-                let customerIcon = L.icon({
-                    iconUrl: '../assets/img/icon-person.png',
-                    iconSize: [35, 35]
-                })
+                get(child(ref(firebaseDatabase), "Users/Customers/" + e.key)).then((snapshot) => {
+                    if (snapshot.exists()) {
 
-                customerMarker = L.marker([lat, long], {
-                    icon: customerIcon
-                }).addTo(map)
+                        let name = snapshot.val().name
+
+                        L.marker([lat, long], {
+                            icon: customerIcon
+                        }).addTo(map).bindPopup(name).openPopup();
+                    }
+                })
             })
         }
     }))
 }
 
 function getPositionDrivers() {
-
-    if (driverMarker != undefined) {
-        map.removeLayer(driverMarker)
-    }
-
-    console.log(driverMarker);
-
     get(child(ref(firebaseDatabase), "DriversAvailable")).then((snapshot => {
         if (snapshot.exists()) {
+
+            let driverIcon = L.icon({
+                iconUrl: '../assets/img/icon-car.png',
+                iconSize: [35, 35]
+            })
+
             snapshot.forEach((e) => {
 
                 let lat = e.val().l[0];
                 let long = e.val().l[1];
 
-                let driverIcon = L.icon({
-                    iconUrl: '../assets/img/icon-car.png',
-                    iconSize: [35, 35]
-                })
+                get(child(ref(firebaseDatabase), "Users/Drivers/" + e.key)).then((snapshot) => {
+                    if (snapshot.exists()) {
 
-                driverMarker = L.marker([lat, long], {
-                    icon: driverIcon
-                }).addTo(map)
+                        let numberTransportation = snapshot.val().numberTransportation
+
+                        L.marker([lat, long], {
+                            icon: driverIcon
+                        }).addTo(map).bindPopup(numberTransportation).openPopup();
+                    }
+                })
             })
         }
     }))
