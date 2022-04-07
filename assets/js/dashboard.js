@@ -14,10 +14,7 @@ import {
     uploadBytesResumable,
     getDownloadURL
 } from "https://www.gstatic.com/firebasejs/9.6.5/firebase-storage.js";
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: "AIzaSyBZRi24fGE6-MEBRGEIkO17-Za6CziKA_Q",
     authDomain: "kotline-app.firebaseapp.com",
