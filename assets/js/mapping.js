@@ -1,10 +1,11 @@
-// Import the functions you need from the SDKs you need
 import {
     initializeApp
 } from "https://www.gstatic.com/firebasejs/9.6.5/firebase-app.js";
 import {
     getDatabase,
     ref,
+    get,
+    child,
     onValue,
     update
 } from "https://www.gstatic.com/firebasejs/9.6.5/firebase-database.js";
@@ -30,6 +31,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firebaseDatabase = getDatabase(app);
 
+var map = L.map('map').setView([-7.447390, 109.553857], 10);
+var customerMarker;
+var driverMarker;
 // get id admin name
 let adminName = document.getElementById("adminName");
 // get id button sign out
@@ -91,8 +95,6 @@ async function uploadProcess() {
     var imgUpload = files[0];
 
     var imageName = fileName + extName;
-
-    console.log(imgUpload.type)
 
     const metaData = {
         contentType: imgUpload.type
@@ -196,87 +198,79 @@ btnSignOut.addEventListener("click", () => {
     })
 })
 
-// read data firebase database history angkutan A
-const historyRefA = ref(firebaseDatabase, "History/A");
-const totalUsersA = [];
-onValue(historyRefA, (snapshot) => {
-    snapshot.forEach((e) => {
-        totalUsersA.push(e.val());
-    })
+L.tileLayer(
+    'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 30,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1
+    }).addTo(map);
 
-    const cardA = document.getElementById("angkutanA");
-    if (totalUsersA.length == 0) {
-        cardA.innerHTML = "0 Orang";
-    } else {
-        cardA.innerHTML = `${totalUsersA.length} Orang`;
+
+if (!navigator.geolocation) {
+    console.log("Your browser doesn't support geolocation feature!");
+} else {
+    setInterval(() => {
+        getPositonCustomers()
+        getPositionDrivers()
+    }, 1000)
+}
+
+function getPositonCustomers() {
+
+    if (customerMarker != undefined) {
+        map.removeLayer(customerMarker);
     }
-})
 
-// read data firebase database history angkutan B
-const historyRefB = ref(firebaseDatabase, "History/B");
-const totalUsersB = [];
-onValue(historyRefB, (snapshot) => {
-    snapshot.forEach((e) => {
-        totalUsersB.push(e.val());
-    })
+    get(child(ref(firebaseDatabase), "CustomersPosition")).then((snapshot => {
+        if (snapshot.exists()) {
+            snapshot.forEach((e) => {
 
-    const cardB = document.getElementById("angkutanB");
-    if (totalUsersB.length == 0) {
-        cardB.innerHTML = "0 Orang";
-    } else {
-        cardB.innerHTML = `${totalUsersB.length} Orang`;
+                let lat = e.val().l[0];
+                let long = e.val().l[1];
+
+                let customerIcon = L.icon({
+                    iconUrl: '../assets/img/icon-person.png',
+                    iconSize: [35, 35]
+                })
+
+                customerMarker = L.marker([lat, long], {
+                    icon: customerIcon
+                }).addTo(map)
+            })
+        }
+    }))
+}
+
+function getPositionDrivers() {
+
+    if (driverMarker != undefined) {
+        map.removeLayer(driverMarker)
     }
-})
 
-// read data firebase database history angkutan C
-const historyRefC = ref(firebaseDatabase, "History/C");
-const totalUsersC = [];
-onValue(historyRefC, (snapshot) => {
-    snapshot.forEach((e) => {
-        totalUsersC.push(e.val());
-    })
+    console.log(driverMarker);
 
-    const cardC = document.getElementById("angkutanC");
-    if (totalUsersC.length == 0) {
-        cardC.innerHTML = "0 Orang";
-    } else {
-        cardC.innerHTML = `${totalUsersC.length} Orang`;
-    }
-})
+    get(child(ref(firebaseDatabase), "DriversAvailable")).then((snapshot => {
+        if (snapshot.exists()) {
+            snapshot.forEach((e) => {
 
-// read data firebase database history angkutan D
-const historyRefD = ref(firebaseDatabase, "History/D");
-const totalUsersD = [];
-onValue(historyRefD, (snapshot) => {
-    snapshot.forEach((e) => {
-        totalUsersD.push(e.val());
-    })
+                let lat = e.val().l[0];
+                let long = e.val().l[1];
 
-    const cardD = document.getElementById("angkutanD");
-    if (totalUsersD == 0) {
-        cardD.innerHTML = "0 Orang";
-    } else {
-        cardD.innerHTML = `${totalUsersD.length} Orang`;
-    }
-})
+                let driverIcon = L.icon({
+                    iconUrl: '../assets/img/icon-car.png',
+                    iconSize: [35, 35]
+                })
 
-// read data firebase database history all angkutan
-const historyRef = ref(firebaseDatabase, "History");
-const cardTotalUsers = document.getElementById("angkutan");
-onValue(historyRef, (snapshot) => {
-    const totalUsers = []
-    snapshot.forEach((e) => {
-        e.forEach((total) => {
-            totalUsers.push(total.val())
-        })
-    })
-
-    if (totalUsers == 0) {
-        cardTotalUsers.innerHTML = "0 Orang";
-    } else {
-        cardTotalUsers.innerHTML = `${totalUsers.length} Orang`;
-    }
-})
+                driverMarker = L.marker([lat, long], {
+                    icon: driverIcon
+                }).addTo(map)
+            })
+        }
+    }))
+}
 
 // load data
 window.onload = function () {
